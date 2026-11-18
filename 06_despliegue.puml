@@ -1,0 +1,15 @@
+@startuml
+skinparam dpi 150
+skinparam shadowing false
+node "Equipo del usuario" as cliente {
+  artifact "Navegador web\n(Swagger UI en /docs)" as nav
+}
+node "Servidor de aplicación\n(Python 3.12)" as srv {
+  node "Uvicorn\n(servidor ASGI)" as uv {
+    component "UniGigs API\n(FastAPI)" as api
+  }
+  database "Repositorios en memoria\n(RepositorioMemoria)" as mem
+}
+nav --> api : HTTP / JSON\n(puerto 8000)
+api --> mem : lectura y escritura
+@enduml

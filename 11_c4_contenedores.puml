@@ -1,0 +1,19 @@
+@startuml
+!include <C4/C4_Container>
+skinparam dpi 150
+LAYOUT_WITH_LEGEND()
+title Modelo C4, nivel 2: diagrama de contenedores de UniGigs
+
+Person(usuarios, "Estudiantes y administrador", "Ofrecen, contratan y administran servicios")
+System_Boundary(sistema, "UniGigs") {
+  Container(swagger, "Interfaz web interactiva", "Swagger UI (OpenAPI)", "Permite consultar y probar la API desde el navegador en /docs")
+  Container(api, "API REST", "Python 3.12, FastAPI", "Implementa MVC y los patrones State, Strategy y Observer")
+  ContainerDb(mem, "Repositorios en memoria", "Python (RepositorioMemoria)", "Usuarios, servicios y pedidos; se pierden al reiniciar")
+}
+System_Ext(pasarela, "Pasarela de pagos", "PSE, Nequi y tarjeta (simulada)")
+
+Rel(usuarios, swagger, "Usa", "HTTPS")
+Rel(swagger, api, "Envía solicitudes", "JSON / HTTP")
+Rel(api, mem, "Lee y escribe", "Llamadas a métodos")
+Rel(api, pasarela, "Solicita el cobro", "Estrategia MetodoPago")
+@enduml

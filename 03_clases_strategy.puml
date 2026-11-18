@@ -1,0 +1,47 @@
+@startuml
+skinparam dpi 150
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide empty members
+
+class Entregado <<Estado concreto>> {
+  +aprobar_y_pagar(pedido, metodo, datos)
+}
+class Pago {
+  -pedido_id: int
+  -monto: float
+  -metodo: str
+  -referencia: str
+}
+abstract class MetodoPago <<Estrategia>> #FFF6E5 {
+  +nombre: str
+  +procesar_pago(monto, datos)
+}
+class PagoTarjeta {
+  +procesar_pago(monto, datos)
+}
+class PagoPSE {
+  +procesar_pago(monto, datos)
+}
+class PagoNequi {
+  +procesar_pago(monto, datos)
+}
+class ResultadoPago {
+  -aprobado: bool
+  -metodo: str
+  -referencia: str
+  -mensaje: str
+}
+class RegistroMetodosPago {
+  +obtener(nombre)
+  +disponibles()
+}
+
+Entregado ..> MetodoPago : usa
+Entregado ..> Pago : crea
+MetodoPago <|-- PagoTarjeta
+MetodoPago <|-- PagoPSE
+MetodoPago <|-- PagoNequi
+MetodoPago ..> ResultadoPago : devuelve
+RegistroMetodosPago o--> "1..*" MetodoPago
+@enduml

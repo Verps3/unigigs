@@ -1,0 +1,95 @@
+@startuml
+skinparam dpi 150
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+hide empty members
+
+enum Rol {
+  ESTUDIANTE
+  ADMINISTRADOR
+}
+class Usuario {
+  -id: int
+  -nombre: str
+  -correo: str
+  -rol: Rol
+}
+class Servicio {
+  -id: int
+  -titulo: str
+  -descripcion: str
+  -precio: float
+  -categoria: str
+  -oferente_id: int
+  -activo: bool
+  +desactivar()
+}
+class Pago {
+  -id: int
+  -pedido_id: int
+  -monto: float
+  -metodo: str
+  -referencia: str
+  -fecha: datetime
+}
+class Pedido <<Contexto>> #D5E8D4 {
+  -id: int
+  -servicio_id: int
+  -contratante_id: int
+  -oferente_id: int
+  -monto: float
+  -fecha: datetime
+  -estado: EstadoPedido
+  -observadores: List<Observer>
+  +publicar()
+  +contratar()
+  +aceptar()
+  +rechazar()
+  +entregar()
+  +cancelar()
+  +aprobar_y_pagar(metodo, datos)
+  +cambiar_estado(nuevo)
+  +agregar_observador(observador)
+  +quitar_observador(observador)
+  +notificar(evento)
+}
+abstract class EstadoPedido {
+  +nombre: str
+  +contratar(pedido)
+  +aceptar(pedido)
+  +rechazar(pedido)
+  +entregar(pedido)
+  +cancelar(pedido)
+  +aprobar_y_pagar(pedido, metodo, datos)
+}
+class Publicado {
+  +contratar(pedido)
+}
+class Contratado {
+  +aceptar(pedido)
+  +rechazar(pedido)
+}
+class EnProgreso {
+  +entregar(pedido)
+  +cancelar(pedido)
+}
+class Entregado {
+  +aprobar_y_pagar(pedido, metodo, datos)
+}
+class Pagado
+class Cancelado
+
+Usuario --> Rol
+Usuario "1" -- "0..*" Servicio : ofrece >
+Usuario "1" -- "0..*" Pedido : contrata >
+Servicio "1" -- "0..*" Pedido : origina >
+Pedido *-- "0..1" Pago
+Pedido --> "1" EstadoPedido : estado actual
+EstadoPedido <|-- Publicado
+EstadoPedido <|-- Contratado
+EstadoPedido <|-- EnProgreso
+EstadoPedido <|-- Entregado
+EstadoPedido <|-- Pagado
+EstadoPedido <|-- Cancelado
+@enduml

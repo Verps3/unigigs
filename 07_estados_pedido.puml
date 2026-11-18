@@ -1,0 +1,23 @@
+@startuml
+skinparam dpi 150
+skinparam shadowing false
+skinparam state {
+  BackgroundColor #DAE8FC
+  BorderColor #6C8EBF
+}
+hide empty description
+state "En progreso" as EnProgreso
+state Cancelado #F8CECC
+state Pagado #D5E8D4
+
+[*] --> Publicado : publicar()
+Publicado --> Contratado : contratar()
+Contratado --> EnProgreso : aceptar()
+Contratado --> Cancelado : rechazar()
+EnProgreso --> Entregado : entregar()
+EnProgreso --> Cancelado : cancelar()
+Entregado --> Pagado : aprobar_y_pagar()\n[pago aprobado]
+Entregado --> Entregado : aprobar_y_pagar()\n[pago rechazado]
+Pagado --> [*]
+Cancelado --> [*]
+@enduml

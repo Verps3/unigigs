@@ -1,0 +1,82 @@
+@startuml
+skinparam dpi 150
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+hide empty members
+left to right direction
+
+package "Controlador" #EAF6EA {
+  class UsuarioController {
+    +registrar(datos)
+    +obtener(usuario_id)
+    +notificaciones(usuario_id)
+    +notificaciones_admin()
+  }
+  class ServicioController {
+    +publicar(datos)
+    +buscar(categoria, q)
+    +obtener(servicio_id)
+    +desactivar(servicio_id, datos)
+  }
+  class PedidoController {
+    +crear(datos)
+    +obtener(pedido_id)
+    +contratar(pedido_id, datos)
+    +aceptar(pedido_id, datos)
+    +rechazar(pedido_id, datos)
+    +entregar(pedido_id, datos)
+    +cancelar(pedido_id, datos)
+    +pagar(pedido_id, datos)
+    +metodos_pago()
+  }
+}
+package "Vista (esquemas JSON)" #E8F1FA {
+  class UsuarioIn
+  class UsuarioOut
+  class ServicioIn
+  class ServicioOut
+  class PedidoIn
+  class PedidoOut
+  class AccionIn
+  class PagoIn
+  class PagoOut
+  class NotificacionOut
+}
+package "Persistencia y composición" #FFF6E5 {
+  class Contenedor {
+    +usuarios
+    +servicios
+    +pedidos
+    +bandeja
+    +metodos_pago
+  }
+  class RepositorioMemoria<T> {
+    -items: dict[int, T]
+    +agregar(item)
+    +obtener(id)
+    +listar()
+  }
+}
+package "Modelo (ver Figuras 2 a 4)" #F3F3F3 {
+  class BandejaNotificaciones
+  class RegistroMetodosPago
+}
+
+UsuarioController --> Contenedor
+ServicioController --> Contenedor
+PedidoController --> Contenedor
+Contenedor *-- "3" RepositorioMemoria
+Contenedor *-- BandejaNotificaciones
+Contenedor *-- RegistroMetodosPago
+UsuarioController ..> UsuarioIn
+UsuarioController ..> UsuarioOut
+UsuarioController ..> NotificacionOut
+ServicioController ..> ServicioIn
+ServicioController ..> ServicioOut
+PedidoController ..> PedidoIn
+PedidoController ..> PedidoOut
+PedidoController ..> AccionIn
+PedidoController ..> PagoIn
+PedidoOut *-- "0..1" PagoOut
+@enduml

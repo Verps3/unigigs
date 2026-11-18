@@ -1,0 +1,37 @@
+@startuml
+skinparam dpi 150
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #DAE8FC
+  BorderColor #6C8EBF
+}
+left to right direction
+actor "Estudiante\nque ofrece" as OF
+actor "Estudiante\nque contrata" as CO
+actor "Administrador" as AD
+rectangle "UniGigs" {
+  usecase "Registrarse" as U0
+  usecase "Publicar servicio" as U1
+  usecase "Buscar servicios" as U2
+  usecase "Crear pedido" as U3
+  usecase "Contratar" as U4
+  usecase "Aceptar o rechazar pedido" as U5
+  usecase "Entregar trabajo" as U6
+  usecase "Aprobar y pagar" as U7
+  usecase "Consultar notificaciones" as U8
+  usecase "Desactivar servicio" as U9
+}
+OF --> U0
+OF --> U1
+OF --> U5
+OF --> U6
+OF --> U8
+CO --> U0
+CO --> U2
+CO --> U3
+CO --> U4
+CO --> U7
+CO --> U8
+AD --> U9
+AD --> U8
+@enduml

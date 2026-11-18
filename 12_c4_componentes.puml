@@ -1,0 +1,33 @@
+@startuml
+!include <C4/C4_Component>
+skinparam dpi 150
+LAYOUT_WITH_LEGEND()
+title Modelo C4, nivel 3: diagrama de componentes de la API REST
+
+Container(swagger, "Interfaz web interactiva", "Swagger UI", "Cliente de la API")
+Container_Boundary(api, "API REST (FastAPI)") {
+  Component(uc, "UsuarioController", "APIRouter", "Registro de usuarios y consulta de notificaciones")
+  Component(sc, "ServicioController", "APIRouter", "Publicar, buscar y desactivar servicios")
+  Component(pc, "PedidoController", "APIRouter", "Crear pedidos y ejecutar sus acciones")
+  Component(vista, "Esquemas (Vista)", "Pydantic", "Validan la entrada y dan forma al JSON de salida")
+  Component(dominio, "Modelo de dominio", "Python", "Usuario, Servicio, Pedido y Pago")
+  Component(estados, "Estados del pedido", "Patrón State", "Publicado, Contratado, En progreso, Entregado, Pagado, Cancelado")
+  Component(pagos, "Métodos de pago", "Patrón Strategy", "PagoTarjeta, PagoPSE y PagoNequi")
+  Component(obs, "Notificadores", "Patrón Observer", "NotificadorUsuario y NotificadorAdmin")
+  Component(repo, "Repositorios", "RepositorioMemoria", "Almacenan los objetos del dominio")
+}
+System_Ext(pasarela, "Pasarela de pagos", "Simulada")
+
+Rel(swagger, uc, "Usa", "JSON / HTTP")
+Rel(swagger, sc, "Usa", "JSON / HTTP")
+Rel(swagger, pc, "Usa", "JSON / HTTP")
+Rel(pc, vista, "Recibe y devuelve")
+Rel(pc, dominio, "Orquesta")
+Rel(dominio, estados, "Delega el comportamiento")
+Rel(estados, pagos, "Cobra mediante")
+Rel(dominio, obs, "Notifica a")
+Rel(uc, repo, "Usa")
+Rel(sc, repo, "Usa")
+Rel(pc, repo, "Usa")
+Rel(pagos, pasarela, "Solicita el cobro")
+@enduml

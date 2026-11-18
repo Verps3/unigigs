@@ -1,0 +1,40 @@
+@startuml
+skinparam dpi 150
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+hide empty members
+
+class Pedido <<Subject>> #D5E8D4 {
+  -observadores: List<Observer>
+  +agregar_observador(observador)
+  +quitar_observador(observador)
+  +notificar(evento)
+}
+abstract class Observer #F6F0FA {
+  +actualizar(evento)
+}
+class NotificadorUsuario {
+  -usuario_id: int
+  +actualizar(evento)
+}
+class NotificadorAdmin {
+  +actualizar(evento)
+}
+class EventoPedido {
+  -pedido_id: int
+  -estado_anterior: str
+  -estado_nuevo: str
+  -mensaje: str
+}
+class BandejaNotificaciones {
+  +agregar(destinatario, evento)
+  +de(destinatario)
+}
+
+Pedido o--> "0..*" Observer : observadores
+Observer <|-- NotificadorUsuario
+Observer <|-- NotificadorAdmin
+Observer ..> EventoPedido : recibe
+NotificadorUsuario --> BandejaNotificaciones
+NotificadorAdmin --> BandejaNotificaciones
+@enduml

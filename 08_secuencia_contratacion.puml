@@ -1,0 +1,39 @@
+@startuml
+skinparam dpi 150
+skinparam shadowing false
+skinparam sequenceMessageAlign center
+hide footbox
+actor "Estudiante\nque contrata" as C
+actor "Estudiante\nque ofrece" as O
+participant PedidoController as PC
+participant "RepositorioMemoria" as R
+participant Pedido as P
+participant "EstadoPedido\n(estado actual)" as E
+participant "Observers\n(Notificadores)" as OB
+
+== Crear pedido ==
+C -> PC : POST /pedidos {servicio_id, contratante_id}
+PC -> R : obtener(servicio_id), obtener(contratante_id)
+PC -> P ** : crear(Pedido)
+PC -> R : agregar(pedido)
+PC -> P : agregar_observador(contratante, oferente, admin)
+PC -> P : publicar()
+P -> OB : actualizar(evento "Publicado")
+PC --> C : 201 {estado: Publicado}
+
+== Contratar ==
+C -> PC : POST /pedidos/{id}/contratar
+PC -> P : contratar()
+P -> E : contratar(pedido)   <<Publicado>>
+E -> P : cambiar_estado(Contratado)
+P -> OB : actualizar(evento "Publicado -> Contratado")
+PC --> C : 200 {estado: Contratado}
+
+== Aceptar (el flujo de entregar es análogo) ==
+O -> PC : POST /pedidos/{id}/aceptar
+PC -> P : aceptar()
+P -> E : aceptar(pedido)   <<Contratado>>
+E -> P : cambiar_estado(EnProgreso)
+P -> OB : actualizar(evento "Contratado -> En progreso")
+PC --> O : 200 {estado: En progreso}
+@enduml

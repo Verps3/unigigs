@@ -1,0 +1,17 @@
+@startuml
+!include <C4/C4_Context>
+skinparam dpi 150
+LAYOUT_WITH_LEGEND()
+title Modelo C4, nivel 1: diagrama de contexto de UniGigs
+
+Person(oferente, "Estudiante que ofrece", "Publica servicios y entrega los trabajos")
+Person(contratante, "Estudiante que contrata", "Busca, contrata y paga servicios")
+Person(admin, "Administrador", "Desactiva servicios y revisa notificaciones")
+System(unigigs, "UniGigs", "Marketplace web de servicios entre estudiantes universitarios")
+System_Ext(pasarela, "Pasarela de pagos", "PSE, Nequi y tarjeta (simulada en el prototipo)")
+
+Rel(oferente, unigigs, "Publica servicios, acepta y entrega pedidos")
+Rel(contratante, unigigs, "Busca, contrata y paga")
+Rel(admin, unigigs, "Desactiva servicios y revisa notificaciones")
+Rel(unigigs, pasarela, "Solicita el cobro", "Estrategia MetodoPago")
+@enduml
